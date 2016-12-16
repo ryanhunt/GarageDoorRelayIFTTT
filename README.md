@@ -25,6 +25,8 @@ I have my setup as such:
 5. Content type = `application/x-www-form-urlencoded`
 6. Body = `secret=SEKRETHASH&long={{Longitude}}&lat={{Latitude}}`
 
+Note `SEKRETHASH` in that last step, this needs to be the same value as in `$secret` otherwise the code won't work. This is my way of trying to prevent hax0rs, I'm sure there's a better way. 
+
 # Hardware
 
 I largely copied the steps described [here](http://www.instructables.com/id/Arduino-WiFi-Garage-Door-Opener/), after many attempts at trying to hack the rolling codes on my garage door (don't try). The parts, and my setup are:
