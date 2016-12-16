@@ -10,7 +10,7 @@ Make sure you add a `secret.php` to the same folder as the `index.php`, and incl
     $secret = '';
     $home_lat = '';
     $home_long = '';
-    $openCommand = 'sudo <path-to-this-code>/pi433mhzControl/script/openDoor.py';
+    $openCommand = 'sudo <path-to-this-code>/GarageDoorRelayIFTTT/script/openDoor.py';
     
     ?>
 
