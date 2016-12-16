@@ -42,7 +42,7 @@ Following the [Merlin hardware instructions for my opener](http://www.gomerlin.c
 
 Since I'm renting, I had no say over the opener, but the person who installed it left the wires exposed as they were connected to an wired button on the wall some 10 metres away, which meant it was easy for me to attach alligator clips to. 
 
-After following the guide listed [above](http://www.instructables.com/id/Arduino-WiFi-Garage-Door-Opener/), I cracked out my multimeter (note this was the first time I ever used one) and measured the voltage of the pins I needed to short using my clips. Unlike the other guy, I was seeing 25V DC between the cables, so it was fairly high - but not in the danger zone, and I was still able to use the cheap Arduino compatible relays (see above). Rather than set it up using a standard relay and transistor, I was lazy and bought the prebuilt one. 
+After following the guide listed [above](http://www.instructables.com/id/Arduino-WiFi-Garage-Door-Opener/), I cracked out my multimeter (note this was the first time I ever used one) and measured the voltage of the pins I needed to short using my clips. Unlike the other guy, I was seeing 25V DC between the cables, so it was fairly high - but not in the [danger zone](https://www.youtube.com/watch?v=siwpn14IE7E), and I was still able to use the cheap Arduino compatible relays (see above). Rather than set it up using a standard relay and transistor, I was lazy and bought the prebuilt one. 
 
 
 
