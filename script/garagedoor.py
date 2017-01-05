@@ -1,4 +1,20 @@
 #!/usr/bin/python3
+#
+# This script allows me to control a Raspberry Pi, connected to my garage door.
+# It controls the following items:
+# * Garage Door relay (to open/close)
+# * 2 x reed switches to determine door state (open/closed)
+# * 1x HC-SR04 module to determine if car is parked in garage
+# * 2 x LEDs (Red, Green) inside of Ping pong balls to display parking spot availability. This is purely for fun, and to mimic a commercial shopping centre. 
+#
+# This script will allow someone to:
+# Open the door, close the door, open the door a small amount for ventilation. 
+# 
+# It will also report the state of the garage (i.e. if the door is open/closed/ventilating/moving) and if the car is parked inside or not. 
+# It will update the 2x LEDs to display state - red will be lit if the car is inside the garage (i.e. spot taken) and green will be lit if the garage is empty (i.e. spot available). The LEDs will also flash when the door is opening or closing from a fully closed or open state.
+# 
+# In order for this script to run properly, you'll need to grant root access to it to the web user (who will call this ultimately).
+#
 # Credit to Matt Hawkins for the sensing components
 # http://www.raspberrypi-spy.co.uk/tag/ultrasonic/
 # -----------------------
@@ -122,8 +138,35 @@ def openDoor():
 	
 def openDoorGap():
 	operateDoor(1, VENTILATIONPERC,0)
-
-
+	
+# this is a dump door trigger, with some basic logic to set flashing lights based on previous door state.
+def ifttt():
+	state = getDoorState()
+	
+	if (state == "opening"):
+		return
+		
+	triggerDoor()
+	
+	if (state == "ventilate"):
+		return
+	
+	timeOpen = 15.59
+	timeClose = 19.77
+	timeout_start = time.time()
+	
+	if (state == "closed"):
+		duration = timeOpen
+	elif(state == "open"):
+		duration = timeClose
+	
+	while (time.time() < timeout_start + duration):
+		flashRED(0.05)
+		flashGREEN(0.05)
+	
+	# this will reset the lights
+	isCarPresent()
+	
 
 # action = open/close where close is 0, open is 1
 # amount = % of door openness based upon a guess of time.
@@ -243,12 +286,13 @@ def triggerDoor():
 
 # add optional commands, if not specified, run in human friendly format.
 parser = argparse.ArgumentParser()
-parser.add_argument("-r", "--cron", help="run suitable for cron", action='store_true')
-parser.add_argument("-j", "--json", help="output in JSON", action='store_true')
+parser.add_argument("-r", "--cron", help="check door status and log, expected to be run by cron", action='store_true')
+parser.add_argument("-j", "--json", help="output door status in JSON", action='store_true')
 parser.add_argument("-o", "--open", help="Open Door", action='store_true')
 parser.add_argument("-c", "--close", help="Close Door", action='store_true')
 parser.add_argument("-f", "--force", help="Force/Override Open/Close", action='store_true')
 parser.add_argument("-v", "--ventilate", help="Open the door a crack, to let some air in.", action='store_true')
+parser.add_argument("-i", "--ifttt", help="Dumb trigger for IFTTT, which simply triggers the door.", action='store_true')
 args = parser.parse_args()
 	
 # Use BCM GPIO references
@@ -309,6 +353,10 @@ if args.force:
 		sys.stderr.write("Force requires an action of close or open.\n")
 	sys.exit()
 
+if args.ifttt:
+	ifttt()
+	sys.exit()
+	
 if args.open:
 	openDoor()
 	sys.exit()
