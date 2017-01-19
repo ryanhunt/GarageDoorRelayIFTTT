@@ -23,6 +23,7 @@ import json
 import time
 import argparse
 import sys
+import os
 import RPi.GPIO as GPIO
 from pathlib import Path
 
@@ -294,7 +295,22 @@ parser.add_argument("-f", "--force", help="Force/Override Open/Close", action='s
 parser.add_argument("-v", "--ventilate", help="Open the door a crack, to let some air in.", action='store_true')
 parser.add_argument("-i", "--ifttt", help="Dumb trigger for IFTTT, which simply triggers the door.", action='store_true')
 args = parser.parse_args()
+
+# check for GPIO permissions. 
+# we assume is user is member of 'gpio' (gid = 997) then we're all good.
+userid = os.getuid()
+
+if userid == 0:
+	sys.stderr.write("Not recommended to run as root. Create a user that is a member of the 'gpio' group, and try again.\n")
+	sys.exit()
 	
+groups = os.getgroups()
+
+if 997 not in groups:
+	sys.stderr.write("Not a member of 'gpio', unable to read/write required pins. Add the current user to the 'gpio' group and try again.\n")
+	sys.exit()
+	
+
 # Use BCM GPIO references
 # instead of physical pin numbers
 GPIO.setmode(GPIO.BCM)
