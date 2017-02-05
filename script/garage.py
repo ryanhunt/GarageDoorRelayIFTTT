@@ -385,7 +385,7 @@ class GarageWeather(Garage):
 		
 	def status(self):
 	
-		instance = dht11.DHT11(pin=self.DHT11_PIN)
+		instance = self.dht11.DHT11(pin=self.DHT11_PIN)
 		
 		while True:
 			result = instance.read()
