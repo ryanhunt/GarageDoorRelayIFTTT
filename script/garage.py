@@ -48,6 +48,15 @@ class Garage():
 		g['doorState'] = door.status()
 		(g['temperature'], g['humidity']) = weather.status()
 		return g
+		
+	def display(self, door, car, weather):
+	
+		DEGC = u"\u2103"
+		
+		(t, h) = weather.status()
+		#str = "Door status: ", door.status(), "Car status: " , car.status(), "Temperature: ", t, "Humidity: ", h
+		str = "{0}, {1}, Temperature: {2}{4}, Humidity: {3}%".format(door.display(), car.display(), t, h, DEGC)
+		return str
 
 class GarageDoor(Garage):
 	def __init__(self):
@@ -88,7 +97,8 @@ class GarageDoor(Garage):
 			return "error"	
 			
 	def display(self):
-		print("Door is", self.status())
+		#print("Door is", self.status())
+		return "Door is {0}".format(self.status())
 		
 	def trigger(self):
 		GPIO.output(self.GPIO_RELAY,GPIO.HIGH)
@@ -361,9 +371,9 @@ class Car(Garage):
 		
 	def display(self):
 		if self.status() == 1:
-			print("Car is present.")
+			return "Car is present."
 		else:
-			print("Car is not present.")
+			return "Car is not present."
 
 
 class GarageWeather(Garage):
@@ -400,8 +410,9 @@ class GarageWeather(Garage):
 			time.sleep(0.1)	
 	
 	def display(self):
-		print("Temperature: %d%s" % (self.temperature, self.DEGC))
-		print("Humidity: %d%%" % self.humidity)
+		#print("Temperature: %d%s, Humidity: %d%%" % (self.temperature, self.DEGC, self.humidity))
+		str = "Temperature: {0}{1}, Humidity: {2}%".format(self.temperature, self.DEGC, self.humidity)
+		return str
 
 class GarageLights(Garage):
 	def __init__(self):
@@ -529,9 +540,9 @@ if __name__ == '__main__':
 		
 		#TODO: log status elsewhere - and setup triggers such as SMS alerts for periods when door is open too long.
 	else:
-		door.display()
-		car.display()
-		weather.display()
+		print(door.display())
+		print(car.display())
+		print(weather.display())
 
 	#print("Car status: " , car.status(), "Door is: ", door.status())
 	

@@ -53,9 +53,11 @@ class Garage():
 		
 	def display(self, door, car, weather):
 
+		DEGC = u"\u2103"
+		
 		(t, h) = weather.status()
 		#str = "Door status: ", door.status(), "Car status: " , car.status(), "Temperature: ", t, "Humidity: ", h
-		str = "Door status: {0}, Car Status: {1}, Temperature: {2}, Humidity: {3}".format(door.status(), car.status(), t, h)
+		str = "{0}, {1}, Temperature: {2}{4}, Humidity: {3}%".format(door.display(), car.display(), t, h, DEGC)
 		return str
 
 class GarageDoor(Garage):
