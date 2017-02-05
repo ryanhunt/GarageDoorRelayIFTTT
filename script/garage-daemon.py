@@ -53,8 +53,8 @@ class Garage():
 		
 	def display(self, door, car, weather):
 
-		(t, h) = self.weather.status()
-		str = "Door status: ", self.door.status(), "Car status: " , self.car.status(), "Temperature: ", t, "Humidity: ", h
+		(t, h) = weather.status()
+		str = "Door status: ", door.status(), "Car status: " , car.status(), "Temperature: ", t, "Humidity: ", h
 		return str
 
 class GarageDoor(Garage):
