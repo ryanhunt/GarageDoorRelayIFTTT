@@ -584,7 +584,8 @@ class App:
 					#print ("Door status: ", self.door.status(), "Car status: " , self.car.status())
 					print (self.garage.display(self.door, self.car, self.weather))
 				else:
-					logging.info('DEBUG: Door status: %s Car status %d', self.door.status(), self.car.status())
+					#logging.info('DEBUG: Door status: %s Car status %d', self.door.status(), self.car.status())
+					logging.info('DEBUG: %s', self.garage.display(self.door, self.car, self.weather))
 
 				time.sleep(1)
 			except:
