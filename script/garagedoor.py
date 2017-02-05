@@ -148,7 +148,7 @@ def openDoorGap():
 def weather():
 	(temperature, humidity) = getWeather()
 	
-    DEGC = u"\u2103"
+	DEGC = u"\u2103"
     print("Temperature: %d%s" % (temperature, DEGC))
     print("Humidity: %d%%" % humidity)
 		

@@ -52,9 +52,9 @@ class Garage():
 		
 class GarageWeather(Garage):
 	def __init__(self):
-		import dht11
-		
 		super(GarageDoor, self).__init__()
+		
+		import dht11
 		
 		# DHT11 module, dht11 module handles pin management. 
 		self.DHT11_PIN = 21
