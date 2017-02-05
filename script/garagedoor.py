@@ -149,8 +149,8 @@ def weather():
 	(temperature, humidity) = getWeather()
 	
 	DEGC = u"\u2103"
-    print("Temperature: %d%s" % (temperature, DEGC))
-    print("Humidity: %d%%" % humidity)
+	print("Temperature: %d%s" % (temperature, DEGC))
+	print("Humidity: %d%%" % humidity)
 		
 def getWeather():
 	instance = dht11.DHT11(pin=DHT11_PIN)

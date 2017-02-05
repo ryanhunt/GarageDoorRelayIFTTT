@@ -48,8 +48,7 @@ class Garage():
 		g['doorState'] = door.status()
 		(g['temperature'], g['humidity']) = weather.status()
 		return g
-		
-		
+
 class GarageWeather(Garage):
 	def __init__(self):
 		super(GarageDoor, self).__init__()
