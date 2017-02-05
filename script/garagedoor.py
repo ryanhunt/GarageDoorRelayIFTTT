@@ -149,9 +149,14 @@ def weather():
 	instance = dht11.DHT11(pin=DHT11_PIN)
 	
 	result = instance.read()
-	print("Temperature is ", result.temperature)
-	print("Humidity is ", result.humidity)
-
+	
+	while True:
+	
+		if result.is_valid():
+			print("Temperature is ", result.temperature)
+			print("Humidity is ", result.humidity)
+			break	
+		time.sleep(0.1)
 
 # this is a dump door trigger, with some basic logic to set flashing lights based on previous door state.
 def ifttt():
