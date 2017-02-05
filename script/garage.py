@@ -49,40 +49,6 @@ class Garage():
 		(g['temperature'], g['humidity']) = weather.status()
 		return g
 
-class GarageWeather(Garage):
-	def __init__(self):
-		super(GarageDoor, self).__init__()
-		
-		import dht11
-		
-		# DHT11 module, dht11 module handles pin management. 
-		self.DHT11_PIN = 21
-		
-		# establish blank settings
-		self.temperature = 0
-		self.humidity = 0
-		
-		self.DEGC = u"\u2103"
-		
-		self.status()
-		
-	def status(self):
-	
-		instance = dht11.DHT11(pin=self.DHT11_PIN)
-		
-		while True:
-			result = instance.read()
-			if result.is_valid():
-				self.temperature = result.temperature
-				self.humidity = result.humidity
-				return (result.temperature, result.humidity)
-				break	
-			time.sleep(0.1)	
-	
-	def display(self):
-		print("Temperature: %d%s" % (self.temperature, self.DEGC))
-		print("Humidity: %d%%" % self.humidity)
-
 class GarageDoor(Garage):
 	def __init__(self):
 		super(GarageDoor, self).__init__()
@@ -320,9 +286,6 @@ class GarageDoor(Garage):
 		else: 
 			print("Something else is up?")
 			return
-	
-	
-		
 
 class Car(Garage):
 	def __init__(self):
@@ -401,6 +364,41 @@ class Car(Garage):
 			print("Car is present.")
 		else:
 			print("Car is not present.")
+
+
+class GarageWeather(Garage):
+	def __init__(self):
+		super(GarageWeather, self).__init__()
+		
+		import dht11
+		
+		# DHT11 module, dht11 module handles pin management. 
+		self.DHT11_PIN = 21
+		
+		# establish blank settings
+		self.temperature = 0
+		self.humidity = 0
+		
+		self.DEGC = u"\u2103"
+		
+		self.status()
+		
+	def status(self):
+	
+		instance = dht11.DHT11(pin=self.DHT11_PIN)
+		
+		while True:
+			result = instance.read()
+			if result.is_valid():
+				self.temperature = result.temperature
+				self.humidity = result.humidity
+				return (result.temperature, result.humidity)
+				break	
+			time.sleep(0.1)	
+	
+	def display(self):
+		print("Temperature: %d%s" % (self.temperature, self.DEGC))
+		print("Humidity: %d%%" % self.humidity)
 
 class GarageLights(Garage):
 	def __init__(self):
