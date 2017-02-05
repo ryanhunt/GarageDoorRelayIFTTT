@@ -24,8 +24,8 @@ $state = json_decode(exec($statusCommand));
 	</head>
 	<body>
 		<h1><?php echo $doorFriendlyName; ?> Garage Door</h1>
-			<!-- <div class='well' style="width: 200px"> -->
-			<div class='well'>
+			<div class='well' style="width: 400px">
+			<!--<div class='well'> -->
 				Door State <span class="badge" style="background-color:<?php 
 				if ($state->{'doorState'} == 'closed') { 
 					echo "green"; 
