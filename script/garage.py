@@ -42,13 +42,48 @@ class Garage():
 		# this is so I can retain the settings between run, and avoid errors
 		GPIO.setwarnings(False) 
 		
-	def status(self, door, car):
+	def status(self, door, car, weather):
 		g = {}
 		g['carPresent'] = car.status()
 		g['doorState'] = door.status()
+		(g['temperature'], g['humidity']) = weather.status()
 		return g
 		
 		
+class GarageWeather(Garage):
+	def __init__(self):
+		import dht11
+		
+		super(GarageDoor, self).__init__()
+		
+		# DHT11 module, dht11 module handles pin management. 
+		self.DHT11_PIN = 21
+		
+		# establish blank settings
+		self.temperature = 0
+		self.humidity = 0
+		
+		self.DEGC = u"\u2103"
+		
+		self.status()
+		
+	def status(self):
+	
+		instance = dht11.DHT11(pin=self.DHT11_PIN)
+		
+		while True:
+			result = instance.read()
+			if result.is_valid():
+				self.temperature = result.temperature
+				self.humidity = result.humidity
+				return (result.temperature, result.humidity)
+				break	
+			time.sleep(0.1)	
+	
+	def display(self):
+		print("Temperature: %d%s" % (self.temperature, self.DEGC))
+		print("Humidity: %d%%" % self.humidity)
+
 class GarageDoor(Garage):
 	def __init__(self):
 		super(GarageDoor, self).__init__()
@@ -87,6 +122,9 @@ class GarageDoor(Garage):
 		else:
 			return "error"	
 			
+	def display(self):
+		print("Door is", self.status())
+		
 	def trigger(self):
 		GPIO.output(self.GPIO_RELAY,GPIO.HIGH)
 		# Allow wires to short for long enough.
@@ -358,6 +396,12 @@ class Car(Garage):
 			
 		#setLights(presence)
 		return presence	
+		
+	def display(self):
+		if self.status() == 1:
+			print("Car is present.")
+		else:
+			print("Car is not present.")
 
 class GarageLights(Garage):
 	def __init__(self):
@@ -448,6 +492,7 @@ if __name__ == '__main__':
 	garage = Garage()
 	car = Car()
 	door = GarageDoor()
+	weather = GarageWeather()
 	
 	if args.force:
 		if args.open:
@@ -475,7 +520,7 @@ if __name__ == '__main__':
 		sys.exit()
 	
 	if args.json:
-		status = garage.status(door, car)
+		status = garage.status(door, car, weather)
 		print(json.dumps(status))
 	elif args.cron:
 		#print("doing something for cron")
@@ -484,13 +529,10 @@ if __name__ == '__main__':
 		
 		#TODO: log status elsewhere - and setup triggers such as SMS alerts for periods when door is open too long.
 	else:
-		print("Door is", door.status())
-		if car.status() == 1:
-			print("Car is present.")
-		else:
-			print("Car is not present.")
+		door.display()
+		car.display()
+		weather.display()
 
-	
 	#print("Car status: " , car.status(), "Door is: ", door.status())
 	
 	#lights = GarageLights()

@@ -148,8 +148,9 @@ def openDoorGap():
 def weather():
 	(temperature, humidity) = getWeather()
 	
-	print("Temperature: %d C" % temperature)
-	print("Humidity: %d %%" % humidity)
+    DEGC = u"\u2103"
+    print("Temperature: %d%s" % (temperature, DEGC))
+    print("Humidity: %d%%" % humidity)
 		
 def getWeather():
 	instance = dht11.DHT11(pin=DHT11_PIN)
