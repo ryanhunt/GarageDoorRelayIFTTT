@@ -98,7 +98,8 @@ class GarageDoor(Garage):
 			
 	def display(self):
 		#print("Door is", self.status())
-		return "Door is {0}".format(self.status())
+		str = "Door is {0}".format(self.status())
+		return str
 		
 	def trigger(self):
 		GPIO.output(self.GPIO_RELAY,GPIO.HIGH)
@@ -371,9 +372,10 @@ class Car(Garage):
 		
 	def display(self):
 		if self.status() == 1:
-			return "Car is present."
+			str = "Car is present"
 		else:
-			return "Car is not present."
+			str =  "Car is not present"
+		return str 
 
 
 class GarageWeather(Garage):

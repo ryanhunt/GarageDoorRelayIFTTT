@@ -99,7 +99,9 @@ class GarageDoor(Garage):
 			return "error"	
 	
 	def display(self):
-		print("Door is", self.status())
+		#print("Door is", self.status())
+		str = "Door is {0}".format(self.status())
+		return str
 			
 	def trigger(self):
 		GPIO.output(self.GPIO_RELAY,GPIO.HIGH)
@@ -375,9 +377,10 @@ class Car(Garage):
 
 	def display(self):
 		if self.status() == 1:
-			print("Car is present.")
+			str = "Car is present"
 		else:
-			print("Car is not present.")
+			str =  "Car is not present"
+		return str 
 
 class GarageWeather(Garage):
 	def __init__(self):
@@ -413,8 +416,9 @@ class GarageWeather(Garage):
 			time.sleep(0.1)	
 	
 	def display(self):
-		print("Temperature: %d%s" % (self.temperature, self.DEGC))
-		print("Humidity: %d%%" % self.humidity)
+		#print("Temperature: %d%s, Humidity: %d%%" % (self.temperature, self.DEGC, self.humidity))
+		str = "Temperature: {0}{1}, Humidity: {2}%".format(self.temperature, self.DEGC, self.humidity)
+		return str
 
 
 class GarageLights(Garage):
@@ -581,7 +585,7 @@ class App:
 			# the main loop code.
 			try:
 				#str = time.asctime(time.localtime(time.time()))
-				str = "Door status: ", self.door.status(), "Car status: " , self.car.status()
+
 				
 				if self.foreground:
 					#print ("Door status: ", self.door.status(), "Car status: " , self.car.status())
