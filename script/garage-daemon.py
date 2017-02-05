@@ -44,13 +44,19 @@ class Garage():
 		# this is so I can retain the settings between run, and avoid errors
 		GPIO.setwarnings(False) 
 		
-	def status(self, door, car):
+	def status(self, door, car, weather):
 		g = {}
 		g['carPresent'] = car.status()
 		g['doorState'] = door.status()
+		(g['temperature'], g['humidity']) = weather.status()
 		return g
 		
-		
+	def display(self, door, car, weather):
+
+		(t, h) = self.weather.status()
+		str = "Door status: ", self.door.status(), "Car status: " , self.car.status(), "Temperature: ", t, "Humidity: ", h
+		return str
+
 class GarageDoor(Garage):
 	def __init__(self):
 		super(GarageDoor, self).__init__()
@@ -88,6 +94,9 @@ class GarageDoor(Garage):
 				return "opening"
 		else:
 			return "error"	
+	
+	def display(self):
+		print("Door is", self.status())
 			
 	def trigger(self):
 		GPIO.output(self.GPIO_RELAY,GPIO.HIGH)
@@ -361,6 +370,50 @@ class Car(Garage):
 		#setLights(presence)
 		return presence	
 
+	def display(self):
+		if self.status() == 1:
+			print("Car is present.")
+		else:
+			print("Car is not present.")
+
+class GarageWeather(Garage):
+	def __init__(self):
+		super(GarageWeather, self).__init__()
+		
+		import dht11
+		
+		# DHT11 module, dht11 module handles pin management. 
+		self.DHT11_PIN = 21
+		
+		# ensure we declare an instance of the dht11 interface. 
+		self.dht11 = dht11
+		
+		# establish blank settings
+		self.temperature = 0
+		self.humidity = 0
+		
+		self.DEGC = u"\u2103"
+		
+		self.status()
+		
+	def status(self):
+	
+		instance = self.dht11.DHT11(pin=self.DHT11_PIN)
+		
+		while True:
+			result = instance.read()
+			if result.is_valid():
+				self.temperature = result.temperature
+				self.humidity = result.humidity
+				return (result.temperature, result.humidity)
+				break	
+			time.sleep(0.1)	
+	
+	def display(self):
+		print("Temperature: %d%s" % (self.temperature, self.DEGC))
+		print("Humidity: %d%%" % self.humidity)
+
+
 class GarageLights(Garage):
 	def __init__(self):
 		super(GarageLights, self).__init__()
@@ -501,6 +554,7 @@ class App:
 		self.garage = Garage()
 		self.car = Car()
 		self.door = GarageDoor()
+		self.weather = GarageWeather()
 
 	def open(self):
 		logging.basicConfig(level=logging.DEBUG,
@@ -527,7 +581,8 @@ class App:
 				str = "Door status: ", self.door.status(), "Car status: " , self.car.status()
 				
 				if self.foreground:
-					print ("Door status: ", self.door.status(), "Car status: " , self.car.status())
+					#print ("Door status: ", self.door.status(), "Car status: " , self.car.status())
+					print (self.garage.display(self.door, self.car, self.weather))
 				else:
 					logging.info('DEBUG: Door status: %s Car status %d', self.door.status(), self.car.status())
 
