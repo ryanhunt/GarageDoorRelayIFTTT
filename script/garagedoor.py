@@ -148,10 +148,8 @@ def openDoorGap():
 def weather():
 	instance = dht11.DHT11(pin=DHT11_PIN)
 	
-	result = instance.read()
-	
 	while True:
-	
+		result = instance.read()
 		if result.is_valid():
 			print("Temperature is ", result.temperature)
 			print("Humidity is ", result.humidity)
