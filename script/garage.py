@@ -375,6 +375,9 @@ class GarageWeather(Garage):
 		# DHT11 module, dht11 module handles pin management. 
 		self.DHT11_PIN = 21
 		
+		# ensure we declare an instance of the dht11 interface. 
+		self.dht11 = dht11
+		
 		# establish blank settings
 		self.temperature = 0
 		self.humidity = 0
