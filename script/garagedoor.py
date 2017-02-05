@@ -144,15 +144,22 @@ def openDoor():
 	
 def openDoorGap():
 	operateDoor(1, VENTILATIONPERC,0)
-	
+
 def weather():
+	(temp, humidity) = getWeather()
+	
+	print("Temperature is ", temp)
+	print("Humidity is ", humidity)
+		
+def getWeather():
 	instance = dht11.DHT11(pin=DHT11_PIN)
 	
 	while True:
 		result = instance.read()
 		if result.is_valid():
-			print("Temperature is ", result.temperature)
-			print("Humidity is ", result.humidity)
+			#print("Temperature is ", result.temperature)
+			#print("Humidity is ", result.humidity)
+			return (result.temperature, result.humidity)
 			break	
 		time.sleep(0.1)
 
@@ -414,6 +421,7 @@ if args.json:
 	garageStatus = {}
 	garageStatus['carPresent'] = isCarPresent()
 	garageStatus['doorState'] = getDoorState()
+	(garageStatus['temperature'], garageStatus['humidity']) = getWeather()
 	print(json.dumps(garageStatus))
 elif args.cron:
 	#print("doing something for cron")
@@ -427,5 +435,6 @@ else:
 		print("Car is present.")
 	else:
 		print("Car is not present.")
+	weather()
 	
 #GPIO.cleanup()
