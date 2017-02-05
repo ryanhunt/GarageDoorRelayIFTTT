@@ -18,6 +18,7 @@
 # Credit to Matt Hawkins for the sensing components
 # http://www.raspberrypi-spy.co.uk/tag/ultrasonic/
 # -----------------------
+
 from __future__ import print_function
 import json
 import time
@@ -25,7 +26,11 @@ import argparse
 import sys
 import os
 import RPi.GPIO as GPIO
+import dht11
 from pathlib import Path
+
+__author__ = "Ryan Hunt <ryan@ryanhunt.net>"
+__copyright__ = "Copyright (c) 2016-2017 Ryan Hunt"
 
 # -----------------------
 # Define some functions
@@ -140,6 +145,14 @@ def openDoor():
 def openDoorGap():
 	operateDoor(1, VENTILATIONPERC,0)
 	
+def weather():
+	instance = dht11.DHT11(pin=DHT11_PIN)
+	
+	result = instance.read()
+	print("Temperature is ", result.temperature)
+	print("Humidity is ", result.humidity)
+
+
 # this is a dump door trigger, with some basic logic to set flashing lights based on previous door state.
 def ifttt():
 	state = getDoorState()
@@ -240,11 +253,11 @@ def operateDoor(action, amount, force):
 			sys.stderr.write("Error, invalid action. Must be 1 (to open) or 0 (to close)")
 	elif state == "ventilate":
 		if action == 1:
-			print("Opening door...")
-			
 			if amount != 100:
 				print("Door already in ventilation mode, quitting.")
 				return
+			
+			print("Opening door...")
 			
 			duration = timeOpen - ((VENTILATIONPERC/100) * timeOpen)
 			
@@ -286,7 +299,7 @@ def triggerDoor():
 # -----------------------
 
 # add optional commands, if not specified, run in human friendly format.
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description='Operate a Garage Door.')
 parser.add_argument("-r", "--cron", help="check door status and log, expected to be run by cron", action='store_true')
 parser.add_argument("-j", "--json", help="output door status in JSON", action='store_true')
 parser.add_argument("-o", "--open", help="Open Door", action='store_true')
@@ -294,6 +307,7 @@ parser.add_argument("-c", "--close", help="Close Door", action='store_true')
 parser.add_argument("-f", "--force", help="Force/Override Open/Close", action='store_true')
 parser.add_argument("-v", "--ventilate", help="Open the door a crack, to let some air in.", action='store_true')
 parser.add_argument("-i", "--ifttt", help="Dumb trigger for IFTTT, which simply triggers the door.", action='store_true')
+parser.add_argument("-w", "--weather", help="Tell me the conditions of the Garage.", action='store_true')
 args = parser.parse_args()
 
 # check for GPIO permissions. 
@@ -334,6 +348,9 @@ REED_TOP = 18
 # Relay
 GPIO_RELAY = 4
 
+# DHT11 temp/humidity sensor
+DHT11_PIN = 21
+
 TEMPFILE = Path("/tmp/GarageDoor.air")
 VENTILATIONPERC = 10
 
@@ -371,6 +388,10 @@ if args.force:
 
 if args.ifttt:
 	ifttt()
+	sys.exit()
+	
+if args.weather:
+	weather()
 	sys.exit()
 	
 if args.open:
