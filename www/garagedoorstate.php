@@ -56,9 +56,11 @@ $state = json_decode(exec($statusCommand));
 				<?php echo $state->{'weatherLocation'}?> temperature <span class="badge"><?php echo $state->{'oTemperature'}?>&#x2103;</span><i>(Feels like) </i><span class="badge"><?php echo $state->{'oHeatIndex'}?>&#x2103;</span><br>
 				
 				Rainfall last 3 hours: <span class="badge"><?php echo $state->{'rainfall'}?>mm</span><br>
-				Humidity:<br>
-				Inside: <span class="badge"><?php echo $state->{'humidity'}?>%</span><br>
-				Outside: <span class="badge"><?php echo $state->{'oHumidity'}?>%</span>
+				Humidity<br>
+				<ul>
+				    <li>Inside: <span class="badge"><?php echo $state->{'humidity'}?>%</span>
+				    <li>Outside: <span class="badge"><?php echo $state->{'oHumidity'}?>%</span>
+				</ul>
 			</div>
 	</body>
 </html>
