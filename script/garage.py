@@ -416,6 +416,9 @@ class GarageWeather(Garage):
 	
 		instance = self.dht11.DHT11(pin=self.DHT11_PIN)
 		
+		# get outside weather too
+		self.outside = OutsideWeather(self.unit)
+		
 		while True:
 			result = instance.read()
 			if result.is_valid():
@@ -449,8 +452,83 @@ class GarageWeather(Garage):
 	
 	def display(self):
 		#print("Temperature: %d%s, Humidity: %d%%" % (self.temperature, self.DEGC, self.humidity))
-		str = "Temperature: {0}{3} (Feels like: {1}{3}), Humidity: {2}%".format(self.temperature, self.heatIndex, self.humidity, self.DEG)
+		insideWeather = "Temperature: {0}{3} (Feels like: {1}{3}), Humidity: {2}%".format(self.temperature, self.heatIndex, self.humidity, self.DEG)
+		outsideWeather = self.outside.display()
+		
+		str = "{0}\n{1}".format(insideWeather, outsideWeather)
+		
 		return str
+	
+class OutsideWeather():
+    def __init__(self, unit='c'):
+        # pull in my garage lat/long and API keys from external file so as not to check it into Github
+        import garagesecret as sekret
+        import pyowm
+        
+        (lat,long) = sekret.getCoords()
+        owmKey = sekret.getOWMKey()
+        owm = pyowm.OWM(owmKey)
+        
+        DEGC = u"\u2103"
+        DEGF = u"\u2109"
+        DEGK = u"\u212a"
+        self.unit = unit
+        
+        if (unit == "c"):
+            self.DEG = DEGC
+        elif (unit == "f"):
+            self.DEG = DEGF
+        else:
+            self.DEG = DEGK
+        
+        try:
+                self.obs = owm.weather_at_coords(lat, long)
+        except:
+                print("I reckon you've got the wrong API key, or you haven't waited 10 minutes for the API Key to be registered.")
+                sys.exit()
+        
+        self.status()
+        
+    
+    def status(self):
+        w = self.obs.get_weather()
+        l = self.obs.get_location()
+        
+        name = l.get_name()
+        humidity = w.get_humidity()
+        
+        #get rainfall, in mm. If no value returned, assume zero (0).
+        r = w.get_rain()
+        
+        if ('3h' in r):
+            rainfall = r['3h']
+        else:
+            rainfall = 0
+        
+        if (self.unit == "f"):
+            temp = w.get_temperature(unit='fahrenheit')['temp']
+        elif (self.unit == "k"):
+            temp = w.get_temperature(unit='kelvin')['temp']
+        else:
+            temp = w.get_temperature(unit='celsius')['temp']
+             
+        t = mc.Temp(temp, self.unit)	    
+        hi = mc.heat_index(temperature=t, humidity=humidity)
+         
+        if (self.unit == "f"):
+            heatIndex = round(hi.f,2)
+        elif (self.unit == "k"):
+            heatIndex = round(hi.k,2)
+        else:
+            heatIndex = round(hi.c,2)
+            
+        return (name, temp, humidity, heatIndex, rainfall)
+        
+    def display(self):
+        (name, temp, humidity, heatIndex, rainfall) = self.status()
+        str = "Temperature at {0}: {1}{5} (Feels like: {2}{5}), Humidity: {3}%, Rainfall last 3 hours: {4}mm".format(name, temp, heatIndex, humidity, rainfall, self.DEG)
+        return str
+        
 
 class GarageLights(Garage):
 	def __init__(self):
