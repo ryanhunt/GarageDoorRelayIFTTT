@@ -400,7 +400,7 @@ class GarageWeather(Garage):
 		self.heatIndex = 0
 		
 		# get outside weather too
-		self.outside = OutsideWeather(self.unit)
+		self.outside = OutsideWeather(unit)
 		
 		DEGC = u"\u2103"
 		DEGF = u"\u2109"
