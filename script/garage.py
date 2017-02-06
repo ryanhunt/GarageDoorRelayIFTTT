@@ -394,11 +394,6 @@ class GarageWeather(Garage):
 		# ensure we declare an instance of the dht11 interface. 
 		self.dht11 = dht11
 		
-		# establish blank settings
-		self.temperature = 0
-		self.humidity = 0
-		self.heatIndex = 0
-		
 		# get outside weather too
 		self.outside = OutsideWeather(unit)
 		
@@ -426,36 +421,38 @@ class GarageWeather(Garage):
 			result = instance.read()
 			if result.is_valid():
 				if (self.unit == "f"):
-				    self.temperature = 9.0/5.0 * result.temperature + 32
+				    temperature = 9.0/5.0 * result.temperature + 32
 				elif (self.unit == "k"):
-				    self.temperature = result.temperature + 273
+				    temperature = result.temperature + 273
 				else:
-				    self.temperature = result.temperature
-				self.humidity = result.humidity
+				    temperature = result.temperature
+				humidity = result.humidity
 				
 				# based on these calculate the 'feels like' temp
 				#t = mc.Temp(result.temperature, 'c')
-				t = mc.Temp(self.temperature, self.unit)
+				t = mc.Temp(temperature, self.unit)
 				
-				hi = mc.heat_index(temperature=t, humidity=result.humidity)
+				hi = mc.heat_index(temperature=t, humidity=humidity)
 				
 				
 				if (self.unit == "f"):
-				    self.heatIndex = round(hi.f,2)
+				    heatIndex = round(hi.f,2)
 				elif (self.unit == "k"):
-				    self.heatIndex = round(hi.k,2)
+				    heatIndex = round(hi.k,2)
 				else:
-				    self.heatIndex = round(hi.c,2)
+				    heatIndex = round(hi.c,2)
 				# want the value in Celsius, so hi.c
 				#self.heatIndex = round(hi.c,2)
 				
-				return (self.temperature, result.humidity, self.heatIndex)
+				return (temperature, heatIndex, humidity)
 				break	
 			time.sleep(0.1)	
 	
 	def display(self):
 		#print("Temperature: %d%s, Humidity: %d%%" % (self.temperature, self.DEGC, self.humidity))
-		insideWeather = "Temperature inside: {0}{3} (Feels like: {1}{3}), Humidity: {2}%".format(self.temperature, self.heatIndex, self.humidity, self.DEG)
+		
+		(temp, heatIndex, humidity) = self.status()
+		insideWeather = "Temperature inside: {0}{3} (Feels like: {1}{3}), Humidity: {2}%".format(temp, heatIndex, humidity, self.DEG)
 		outsideWeather = self.outside.display()
 		
 		str = "{0}\n{1}".format(insideWeather, outsideWeather)
