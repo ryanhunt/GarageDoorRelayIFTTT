@@ -399,6 +399,9 @@ class GarageWeather(Garage):
 		self.humidity = 0
 		self.heatIndex = 0
 		
+		# get outside weather too
+		self.outside = OutsideWeather(self.unit)
+		
 		DEGC = u"\u2103"
 		DEGF = u"\u2109"
 		DEGK = u"\u212a"
@@ -411,14 +414,13 @@ class GarageWeather(Garage):
 		else:
 		    self.DEG = DEGK
 		
-		self.status()
+		#self.status()
 		
 	def status(self):
 	
 		instance = self.dht11.DHT11(pin=self.DHT11_PIN)
 		
-		# get outside weather too
-		self.outside = OutsideWeather(self.unit)
+		self.outside.status()
 		
 		while True:
 			result = instance.read()
@@ -488,7 +490,7 @@ class OutsideWeather():
                 print("I reckon you've got the wrong API key, or you haven't waited 10 minutes for the API Key to be registered.")
                 sys.exit()
         
-        self.status()
+        #self.status()
         
     
     def status(self):
