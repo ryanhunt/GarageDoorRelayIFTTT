@@ -410,7 +410,7 @@ class GarageWeather(Garage):
 		else:
 		    self.DEG = DEGK
 		
-		self.status(unit)
+		self.status()
 		
 	def status(self):
 	
