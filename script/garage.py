@@ -429,7 +429,7 @@ class GarageWeather(Garage):
 				
 				# based on these calculate the 'feels like' temp
 				#t = mc.Temp(result.temperature, 'c')
-				t = mc.Temp(result.temperature, self.unit)
+				t = mc.Temp(self.temperature, self.unit)
 				
 				hi = mc.heat_index(temperature=t, humidity=result.humidity)
 				
@@ -443,7 +443,7 @@ class GarageWeather(Garage):
 				# want the value in Celsius, so hi.c
 				#self.heatIndex = round(hi.c,2)
 				
-				return (result.temperature, result.humidity, self.heatIndex)
+				return (self.temperature, result.humidity, self.heatIndex)
 				break	
 			time.sleep(0.1)	
 	
