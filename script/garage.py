@@ -26,6 +26,7 @@ import argparse
 import sys
 import os
 import RPi.GPIO as GPIO
+import meteocalc as mc
 from pathlib import Path
 
 __author__ = "Ryan Hunt <ryan@ryanhunt.net>"
@@ -51,16 +52,12 @@ class Garage():
 	def status(self):
 		self.g['carPresent'] = self.car.status()
 		self.g['doorState'] = self.door.status()
-		(self.g['temperature'], self.g['humidity']) = self.weather.status()
+		(self.g['temperature'], self.g['humidity'], self.g['heatIndex']) = self.weather.status()
 		return self.g
 		
 	def display(self):
-	
-		DEGC = u"\u2103"
-		
-		(t, h) = self.weather.status()
 		#str = "Door status: ", door.status(), "Car status: " , car.status(), "Temperature: ", t, "Humidity: ", h
-		str = "{0}, {1}, Temperature: {2}{4}, Humidity: {3}%".format(self.door.display(), self.car.display(), t, h, DEGC)
+		str = "{0}\n{1}\n{2}".format(self.door.display(), self.car.display(), self.weather.display())
 		return str
 
 class GarageDoor(Garage):
@@ -399,8 +396,10 @@ class GarageWeather(Garage):
 		# establish blank settings
 		self.temperature = 0
 		self.humidity = 0
+		self.heatIndex = 0
 		
 		self.DEGC = u"\u2103"
+		self.DEGF = u"\u2109"
 		
 		self.status()
 		
@@ -413,13 +412,20 @@ class GarageWeather(Garage):
 			if result.is_valid():
 				self.temperature = result.temperature
 				self.humidity = result.humidity
-				return (result.temperature, result.humidity)
+				
+				# based on these calculate the 'feels like' temp
+				t = mc.Temp(result.temperature, 'c')
+				hi = mc.heat_index(temperature=t, humidity=result.humidity)
+				# want the value in Celsius, so hi.c
+				self.heatIndex = round(hi.c,2)
+				
+				return (result.temperature, result.humidity, self.heatIndex)
 				break	
 			time.sleep(0.1)	
 	
 	def display(self):
 		#print("Temperature: %d%s, Humidity: %d%%" % (self.temperature, self.DEGC, self.humidity))
-		str = "Temperature: {0}{1}, Humidity: {2}%".format(self.temperature, self.DEGC, self.humidity)
+		str = "Temperature: {0}{3} (Feels like: {1}{3}), Humidity: {2}%".format(self.temperature, self.heatIndex, self.humidity, self.DEGC)
 		return str
 
 class GarageLights(Garage):
