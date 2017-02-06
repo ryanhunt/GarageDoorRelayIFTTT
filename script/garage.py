@@ -42,20 +42,26 @@ class Garage():
 		# this is so I can retain the settings between run, and avoid errors
 		GPIO.setwarnings(False) 
 		
-	def status(self, door, car, weather):
-		g = {}
-		g['carPresent'] = car.status()
-		g['doorState'] = door.status()
-		(g['temperature'], g['humidity']) = weather.status()
-		return g
+		self.car = Car()
+		self.door = GarageDoor()
+		self.weather = GarageWeather()
 		
-	def display(self, door, car, weather):
+		self.g = {}
+		
+		
+	def status(self):
+		self.g['carPresent'] = self.car.status()
+		self.g['doorState'] = self.door.status()
+		(self.g['temperature'], self.g['humidity']) = self.weather.status()
+		return self.g
+		
+	def display(self):
 	
 		DEGC = u"\u2103"
 		
-		(t, h) = weather.status()
+		(t, h) = self.weather.status()
 		#str = "Door status: ", door.status(), "Car status: " , car.status(), "Temperature: ", t, "Humidity: ", h
-		str = "{0}, {1}, Temperature: {2}{4}, Humidity: {3}%".format(door.display(), car.display(), t, h, DEGC)
+		str = "{0}, {1}, Temperature: {2}{4}, Humidity: {3}%".format(self.door.display(), self.car.display(), t, h, DEGC)
 		return str
 
 class GarageDoor(Garage):
@@ -383,6 +389,7 @@ class GarageWeather(Garage):
 		super(GarageWeather, self).__init__()
 		
 		import dht11
+		import meteocalc as mc
 		
 		# DHT11 module, dht11 module handles pin management. 
 		self.DHT11_PIN = 21
@@ -503,48 +510,46 @@ if __name__ == '__main__':
 		
 	
 	garage = Garage()
-	car = Car()
-	door = GarageDoor()
-	weather = GarageWeather()
 	
 	if args.force:
 		if args.open:
-			door.forceOpen()
+			garage.door.forceOpen()
 		elif args.close:
-			door.forceClose()
+			garage.door.forceClose()
 		else:
 			sys.stderr.write("Force requires an action of close or open.\n")
 		sys.exit()
 	
 	if args.ifttt:
-		door.ifttt()
+		garage.door.ifttt()
 		sys.exit()
 		
 	if args.open:
-		door.open()
+		garage.door.open()
 		sys.exit()
 	
 	if args.close:
-		door.close()
+		garage.door.close()
 		sys.exit()
 		
 	if args.ventilate:
-		door.ventilate()
+		garage.door.ventilate()
 		sys.exit()
 	
 	if args.json:
-		status = garage.status(door, car, weather)
+		status = garage.status()
 		print(json.dumps(status))
 	elif args.cron:
 		#print("doing something for cron")
 		# this will update the LED lights on a regular basis, unsure what happens in a race condition when cron runs and user triggers the script.
-		car.status()
+		garage.car.status()
 		
 		#TODO: log status elsewhere - and setup triggers such as SMS alerts for periods when door is open too long.
 	else:
-		print(door.display())
-		print(car.display())
-		print(weather.display())
+		print(garage.display())
+		#print(garage.door.display())
+		#print(garage.car.display())
+		#print(garage.weather.display())
 
 	#print("Car status: " , car.status(), "Door is: ", door.status())
 	
