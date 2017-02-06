@@ -4,14 +4,32 @@
 # It controls the following items:
 # * Garage Door relay (to open/close)
 # * 2 x reed switches to determine door state (open/closed)
-# * 1x HC-SR04 module to determine if car is parked in garage
+# * 1 x HC-SR04 module to determine if car is parked in garage
 # * 2 x LEDs (Red, Green) inside of Ping pong balls to display parking spot availability. This is purely for fun, and to mimic a commercial shopping centre. 
+# * 1 x DHT11 module to determine temperature and humidity in garage. 
 #
 # This script will allow someone to:
 # Open the door, close the door, open the door a small amount for ventilation. 
 # 
 # It will also report the state of the garage (i.e. if the door is open/closed/ventilating/moving) and if the car is parked inside or not. 
 # It will update the 2x LEDs to display state - red will be lit if the car is inside the garage (i.e. spot taken) and green will be lit if the garage is empty (i.e. spot available). The LEDs will also flash when the door is opening or closing from a fully closed or open state.
+# It will report upon the weather conditions inside the garage, as well outside. It does this by an additional python file I've called 'garagesecret.py'. Which contains the following functions:
+#
+# --------------------------------
+# def getOWMKey():
+#    return "myOWMKey"
+#
+# def getLat():
+#    return YYYYYYYY
+#
+# def getLong():
+#    return YYYYYYY
+#
+# def getCoords():
+#    return (getLat(), getLong())
+# -------------------------------
+#
+# This enables me seperate out my location and my OWM key into a seperate file that is not checked into git.
 # 
 # In order for this script to run properly, you'll need to grant root access to it to the web user (who will call this ultimately).
 #
@@ -654,9 +672,6 @@ if __name__ == '__main__':
 		#TODO: log status elsewhere - and setup triggers such as SMS alerts for periods when door is open too long.
 	else:
 		print(garage.display())
-		#print(garage.door.display())
-		#print(garage.car.display())
-		#print(garage.weather.display())
 
 	#print("Car status: " , car.status(), "Door is: ", door.status())
 	
