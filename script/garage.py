@@ -46,14 +46,14 @@ class Garage():
 		self.door = GarageDoor()
 		self.weather = GarageWeather()
 		
-		self.g = {}
-		
-		
 	def status(self):
-		self.g['carPresent'] = self.car.status()
-		self.g['doorState'] = self.door.status()
-		(self.g['temperature'], self.g['humidity'], self.g['heatIndex']) = self.weather.status()
-		return self.g
+	
+	    g = {}
+		g['carPresent'] = self.car.status()
+		g['doorState'] = self.door.status()
+		(g['temperature'], g['humidity'], g['heatIndex']) = self.weather.status()
+		(g['weatherLocation'], g['oTemperature'], g['oHumidity'], g['oHeatIndex'], g['rainfall']) = self.weather.outside.status()
+		return g
 		
 	def display(self):
 		#str = "Door status: ", door.status(), "Car status: " , car.status(), "Temperature: ", t, "Humidity: ", h

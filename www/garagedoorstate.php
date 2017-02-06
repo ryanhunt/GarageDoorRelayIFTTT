@@ -52,8 +52,8 @@ $state = json_decode(exec($statusCommand));
 					echo "down"; 
 				} 
 				?>" aria-hidden="true"></span></span><br>
-				Temperature <span class="badge"><?php echo $state->{'temperature'}?>&#x2103;</span><br>
-				Feels like <span class="badge"><?php echo $state->{'heatIndex'}?>&#x2103;</span><br>
+				Temperature <span class="badge"><?php echo $state->{'temperature'}?>&#x2103;</span><i>(Feels like) </i><span class="badge"><?php echo $state->{'heatIndex'}?>&#x2103;</span><br>
+				Rainfall last 3 hours: <span class="badge"><?php echo $state->{'rainfall'}?>mm</span><br>
 				Humidity <span class="badge"><?php echo $state->{'humidity'}?>%</span>
 			</div>
 	</body>
