@@ -34,7 +34,6 @@ __copyright__ = "Copyright (c) 2016-2017 Ryan Hunt"
 
 class Garage():
 	def __init__(self):
-		import RPi.GPIO as GPIO
 		
 		# Use BCM GPIO references
 		# instead of physical pin numbers
@@ -66,7 +65,7 @@ class Garage():
 
 class GarageDoor(Garage):
 	def __init__(self):
-		super(GarageDoor, self).__init__()
+		#super(GarageDoor, self).__init__()
 		
 		# Reed switches on door
 		self.REED_BOTTOM = 17
@@ -306,7 +305,7 @@ class GarageDoor(Garage):
 
 class Car(Garage):
 	def __init__(self):
-		super(Car, self).__init__()
+		#super(Car, self).__init__()
 			
 		# HC-SR04 sensor:
 		self.GPIO_TRIGGER = 24
@@ -386,7 +385,7 @@ class Car(Garage):
 
 class GarageWeather(Garage):
 	def __init__(self):
-		super(GarageWeather, self).__init__()
+		#super(GarageWeather, self).__init__()
 		
 		import dht11
 		import meteocalc as mc
@@ -425,7 +424,7 @@ class GarageWeather(Garage):
 
 class GarageLights(Garage):
 	def __init__(self):
-		super(GarageLights, self).__init__()
+		#super(GarageLights, self).__init__()
 		
 		# Lights:
 		self.GPIO_RED	= 22
