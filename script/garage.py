@@ -49,7 +49,7 @@ class Garage():
 	def status(self):
 	    
 	    # prints out all garage stats in JSON friendly format
-        g = {}
+		g = {}
 		g['carPresent'] = self.car.status()
 		g['doorState'] = self.door.status()
 		(g['temperature'], g['humidity'], g['heatIndex']) = self.weather.status()
