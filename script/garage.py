@@ -462,7 +462,7 @@ class GarageWeather(Garage):
 				# want the value in Celsius, so hi.c
 				#self.heatIndex = round(hi.c,2)
 				
-				return (temperature, heatIndex, humidity)
+				return (temperature, humidity, heatIndex)
 				break	
 			time.sleep(0.1)	
 	
