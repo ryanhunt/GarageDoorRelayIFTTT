@@ -8,7 +8,7 @@ import sys
 import os
 import RPi.GPIO as GPIO
 import meteocalc as mc
-import garage
+from garage import *
 from pathlib import Path
 
 __author__ = "Ryan Hunt <ryan@ryanhunt.net>"
