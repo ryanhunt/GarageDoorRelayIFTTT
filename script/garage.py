@@ -145,7 +145,7 @@ class GarageDoor(Garage):
 	
 	# this is a dump door trigger, with some basic logic to set flashing lights based on previous door state.
 	def ifttt(self):
-		state = door.status()
+		state = self.status()
 		
 		if (state == "opening"):
 			return
