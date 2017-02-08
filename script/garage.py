@@ -96,7 +96,7 @@ class GarageDoor(Garage):
 		self.TEMPFILE = Path("/tmp/GarageDoor.air")
 		self.VENTILATIONPERC = 10
 		
-		#self.operation = "default"
+		self.operation = "default"
 		
 	# Check door state
 	def status(self):

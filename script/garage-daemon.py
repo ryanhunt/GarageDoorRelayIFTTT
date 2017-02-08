@@ -133,7 +133,7 @@ class App:
 	
 	def run(self):
 		# Here is your main logic.
-		# Initializing code.
+		# Initialising code.
 		if not self.foreground:
 			logging.basicConfig(level=logging.DEBUG,
 							format='%(asctime)s %(levelname)s %(message)s',
