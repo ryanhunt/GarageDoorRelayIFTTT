@@ -139,19 +139,27 @@ class App:
 							format='%(asctime)s %(levelname)s %(message)s',
 							filename=self.log_file,
 							filemode='a')
+		
+		last = self.garage.door.status()
+		
 		while True:
 			# the main loop code.
 			try:
 				#str = time.asctime(time.localtime(time.time()))
 
+				if ( last != self.garage.door.status() ):
 				
-				if self.foreground:
-					#print ("Door status: ", self.door.status(), "Car status: " , self.car.status())
-					print (self.garage.door.display())
+					if self.foreground:
+						#print ("Door status: ", self.door.status(), "Car status: " , self.car.status())
+						print (self.garage.door.display())
+					else:
+						#logging.info('DEBUG: Door status: %s Car status %d', self.door.status(), self.car.status())
+						logging.info('DEBUG: %s', self.garage.door.display())
+				
 				else:
-					#logging.info('DEBUG: Door status: %s Car status %d', self.door.status(), self.car.status())
-					logging.info('DEBUG: %s', self.garage.door.display())
+					# this means that there is no change, so print/log nothing. We only want to capture changes.
 
+				last = self.garage.door.status()
 				time.sleep(1)
 			except:
 				logging.info(sys.exc_info())
