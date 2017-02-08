@@ -22,6 +22,7 @@
 from __future__ import print_function
 import json
 import time
+import datetime
 import argparse
 import sys
 import os
@@ -141,26 +142,38 @@ class App:
 							filemode='a')
 		
 		last = self.garage.door.status()
+		lastTime = datetime.now()
+		
+		if self.foreground:
+			print ("Daemon started at {0}".format( time.ctime() ) )
+			print (self.garage.door.display())
+		else:
+			logging.info('DEBUG: %s', self.garage.door.status())
 		
 		while True:
 			# the main loop code.
 			try:
 				#str = time.asctime(time.localtime(time.time()))
 
+				# this checks to see if there is a change in state, and if so - log it. 
 				if ( last != self.garage.door.status() ):
 				
 					if self.foreground:
 						#print ("Door status: ", self.door.status(), "Car status: " , self.car.status())
-						print (self.garage.door.display())
+						print ("{0} was for {1} time".format(last, datetime.now() - lastTime)
+						print (self.garage.door.status())
 					else:
 						#logging.info('DEBUG: Door status: %s Car status %d', self.door.status(), self.car.status())
-						logging.info('DEBUG: %s', self.garage.door.display())
+						#logging.info('DEBUG: %s', self.garage.door.status())
+						logging.info("DEBUG: {0} for {1} time".format(last, datetime.now() - lastTime)
+					
+					lastTime = datetime.now()
 				
 				#else:
 					# this means that there is no change, so print/log nothing. We only want to capture changes.
 
 				last = self.garage.door.status()
-				time.sleep(1)
+				time.sleep(0.5)
 			except:
 				logging.info(sys.exc_info())
 				logging.info('Terminating.')
