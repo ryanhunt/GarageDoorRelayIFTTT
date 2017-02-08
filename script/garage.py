@@ -382,7 +382,7 @@ class GarageWeather(Garage):
 	def display(self):
 		#print("Temperature: %d%s, Humidity: %d%%" % (self.temperature, self.DEGC, self.humidity))
 		
-		(temp, heatIndex, humidity) = self.status()
+		(temp, humidity, heatIndex) = self.status()
 		insideWeather = "Temperature inside: {0}{3} (Feels like: {1}{3}), Humidity: {2}%".format(temp, heatIndex, humidity, self.DEG)
 		outsideWeather = self.outside.display()
 		
