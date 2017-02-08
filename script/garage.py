@@ -114,10 +114,8 @@ class GarageDoor(Garage):
 		elif (bottom == 0 and top == 0):
 			if self.TEMPFILE.is_file():
 				return "ventilate"
-			elif (self.operation == "default"):
-				return "operating"
 			else:
-				return self.operation
+				return "operating ({0})".format(self.operation)
 		else:
 			return "error"	
 			
@@ -181,10 +179,10 @@ class GarageDoor(Garage):
 		
 		state = self.status()
 		
-		if ((state == "operating" or state == "opening" or state == "closing") and force == 0):
+		if (state == "operating" and force == 0):
 			# if door currently operating, do nothing.
 			return
-		elif ((state == "operating" or state == "opening" or state == "closing") and force == 1):
+		elif (state == "operating" and force == 1):
 			if (action == 1 or action == 0):
 				if (action == 0):
 					self.operation = "closing"
@@ -216,7 +214,7 @@ class GarageDoor(Garage):
 			elif action == 1:
 				#print("Opening door...")
 				
-				self.operation = "operating"
+				self.operation = "opening"
 				
 				# just to be sure, remove the marker that the door is in ventilation mode.
 				if self.TEMPFILE.is_file():
