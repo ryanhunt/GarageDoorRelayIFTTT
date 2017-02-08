@@ -161,7 +161,7 @@ class App:
 					if self.foreground:
 						#print ("Door status: ", self.door.status(), "Car status: " , self.car.status())
 						print ("{0} was for {1} time".format(last, datetime.now() - lastTime)
-						print (self.garage.door.status())
+						print ("{0}".format(self.garage.door.status() ) )
 					else:
 						#logging.info('DEBUG: Door status: %s Car status %d', self.door.status(), self.car.status())
 						#logging.info('DEBUG: %s', self.garage.door.status())
