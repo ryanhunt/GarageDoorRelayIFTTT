@@ -129,7 +129,7 @@ class App:
 		
 		logging.info('door opened.')
 		
-		self.door.open()
+		self.garage.door.open()
 	
 	def run(self):
 		# Here is your main logic.
