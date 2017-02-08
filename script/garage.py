@@ -96,7 +96,7 @@ class GarageDoor(Garage):
 		self.TEMPFILE = Path("/tmp/GarageDoor.air")
 		self.VENTILATIONPERC = 10
 		
-		self.operation = "default"
+		#self.operation = "default"
 		
 	# Check door state
 	def status(self):
@@ -116,7 +116,10 @@ class GarageDoor(Garage):
 				return "ventilate"
 			else:
 				#return "operating"
-				return self.operation
+				if self.operation:
+					return self.operation
+				else:
+					return "operating"
 		else:
 			return "error"	
 			
@@ -125,7 +128,7 @@ class GarageDoor(Garage):
 		str = "Door is {0}".format(self.status())
 		return str
 		
-	def trigger(self):
+	def _trigger(self):
 		GPIO.output(self.GPIO_RELAY,GPIO.HIGH)
 		# Allow wires to short for long enough.
 		time.sleep(0.5)
@@ -153,7 +156,7 @@ class GarageDoor(Garage):
 		if (state == "opening"):
 			return
 			
-		self.trigger()
+		self._trigger()
 		
 		if (state == "ventilate"):
 			return
@@ -185,7 +188,11 @@ class GarageDoor(Garage):
 			return
 		elif(state == "opening" and force == 1):
 			if (action == 1 or action == 0):
-				self.trigger()
+				if (action == 0):
+					self.operation = "closing"
+				elif (action == 1):
+					self.operation = "opening"
+				self._trigger()
 			else:
 				sys.stderr.write("Error, invalid action. Must be 1 (to open) or 0 (to close)")
 		elif state == "open":
@@ -201,7 +208,7 @@ class GarageDoor(Garage):
 					self.TEMPFILE.unlink()	
 				
 				
-				self.trigger()
+				self._trigger()
 			else:
 				sys.stderr.write("Error, invalid action. Must be 1 (to open) or 0 (to close)")
 		elif state == "closed":
@@ -218,14 +225,14 @@ class GarageDoor(Garage):
 					self.TEMPFILE.unlink()	
 
 				duration = (amount/100) * timeOpen
-				self.trigger()
+				self._trigger()
 				
 				if (amount > 0 and amount < 100):
 					# create a file on the system to denote I'm opening the door to air.
 					self.TEMPFILE.touch()
 					# sleep for the time it takes until door is in ventilate mode. 
 					time.sleep(duration)
-					self.trigger()
+					self._trigger()
 			else:
 				sys.stderr.write("Error, invalid action. Must be 1 (to open) or 0 (to close)")
 		elif state == "ventilate":
@@ -239,7 +246,7 @@ class GarageDoor(Garage):
 				# this is only needed if I wanted to flash lights whilst opening
 				#duration = timeOpen - ((self.VENTILATIONPERC/100) * timeOpen)
 				
-				self.trigger()
+				self._trigger()
 				
 				# remove the marker that the door is in ventilation mode.
 				self.TEMPFILE.unlink()	
