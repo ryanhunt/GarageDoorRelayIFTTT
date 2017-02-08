@@ -156,7 +156,7 @@ class App:
 						#logging.info('DEBUG: Door status: %s Car status %d', self.door.status(), self.car.status())
 						logging.info('DEBUG: %s', self.garage.door.display())
 				
-				else:
+				#else:
 					# this means that there is no change, so print/log nothing. We only want to capture changes.
 
 				last = self.garage.door.status()
