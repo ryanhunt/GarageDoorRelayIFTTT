@@ -114,12 +114,10 @@ class GarageDoor(Garage):
 		elif (bottom == 0 and top == 0):
 			if self.TEMPFILE.is_file():
 				return "ventilate"
+			elif (self.operation == "default"):
+				return "operating"
 			else:
-				#return "operating"
-				if self.operation:
-					return self.operation
-				else:
-					return "operating"
+				return self.operation
 		else:
 			return "error"	
 			
@@ -153,7 +151,7 @@ class GarageDoor(Garage):
 	def ifttt(self):
 		state = self.status()
 		
-		if (state == "opening"):
+		if (state == "operating"):
 			return
 			
 		self._trigger()
@@ -183,10 +181,10 @@ class GarageDoor(Garage):
 		
 		state = self.status()
 		
-		if (state == "opening" and force == 0):
-			# if door currently opening, do nothing.
+		if ((state == "operating" or state == "opening" or state == "closing") and force == 0):
+			# if door currently operating, do nothing.
 			return
-		elif(state == "opening" and force == 1):
+		elif ((state == "operating" or state == "opening" or state == "closing") and force == 1):
 			if (action == 1 or action == 0):
 				if (action == 0):
 					self.operation = "closing"
@@ -218,7 +216,7 @@ class GarageDoor(Garage):
 			elif action == 1:
 				#print("Opening door...")
 				
-				self.operation = "opening"
+				self.operation = "operating"
 				
 				# just to be sure, remove the marker that the door is in ventilation mode.
 				if self.TEMPFILE.is_file():
@@ -238,6 +236,11 @@ class GarageDoor(Garage):
 		elif state == "ventilate":
 			if (action == 1 or action == 0):
 				#print("Opening door...")
+				
+				if (action == 0):
+					self.operation = "closing"
+				elif(action == 1):
+					self.operation = "opening"
 				
 				if amount != 100:
 					#print("Door already in ventilation mode, quitting.")
