@@ -96,6 +96,8 @@ class GarageDoor(Garage):
 		self.TEMPFILE = Path("/tmp/GarageDoor.air")
 		self.VENTILATIONPERC = 10
 		
+		self.operation = "default"
+		
 	# Check door state
 	def status(self):
 	
@@ -113,7 +115,8 @@ class GarageDoor(Garage):
 			if self.TEMPFILE.is_file():
 				return "ventilate"
 			else:
-				return "opening"
+				#return "operating"
+				return self.operation
 		else:
 			return "error"	
 			
@@ -191,6 +194,13 @@ class GarageDoor(Garage):
 				return
 			elif action == 0:
 				#print("Closing door...")
+				self.operation = "closing"
+				
+				# just to be sure, remove the marker that the door is in ventilation mode.
+				if self.TEMPFILE.is_file():
+					self.TEMPFILE.unlink()	
+				
+				
 				self.trigger()
 			else:
 				sys.stderr.write("Error, invalid action. Must be 1 (to open) or 0 (to close)")
@@ -201,6 +211,12 @@ class GarageDoor(Garage):
 			elif action == 1:
 				#print("Opening door...")
 				
+				self.operation = "opening"
+				
+				# just to be sure, remove the marker that the door is in ventilation mode.
+				if self.TEMPFILE.is_file():
+					self.TEMPFILE.unlink()	
+
 				duration = (amount/100) * timeOpen
 				self.trigger()
 				
@@ -232,6 +248,7 @@ class GarageDoor(Garage):
 		else: 
 			sys.stderr.write("Something else is up?")
 			return
+
 class Car(Garage):
 	def __init__(self):
 		#super(Car, self).__init__()
