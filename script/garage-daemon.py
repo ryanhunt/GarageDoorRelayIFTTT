@@ -131,22 +131,7 @@ class App:
 		logging.info('door opened.')
 		
 		self.garage.door.open()
-	
-	def _prettyTimeDelta(seconds):
-		sign_string = '-' if seconds < 0 else ''
-		seconds = abs(int(seconds))
-		days, seconds = divmod(seconds, 86400)
-		hours, seconds = divmod(seconds, 3600)
-		minutes, seconds = divmod(seconds, 60)
-		if days > 0:
-			return '%s%dd%dh%dm%ds' % (sign_string, days, hours, minutes, seconds)
-		elif hours > 0:
-			return '%s%dh%dm%ds' % (sign_string, hours, minutes, seconds)
-		elif minutes > 0:
-			return '%s%dm%ds' % (sign_string, minutes, seconds)
-		else:
-			return '%s%ds' % (sign_string, seconds)
-	
+			
 	def run(self):
 		# Here is your main logic.
 		# Initialising code.
@@ -175,7 +160,7 @@ class App:
 				
 					if self.foreground:
 						#print ("Door status: ", self.door.status(), "Car status: " , self.car.status())
-						print ("{0} was for {1}".format(last, (self._prettyTimeDelta(datetime.datetime.now() - lastTime))))
+						print ("{0} was for {1}".format(last, (datetime.datetime.now() - lastTime)))
 						print ("{0}".format(self.garage.door.status() ) )
 					else:
 						#logging.info('DEBUG: Door status: %s Car status %d', self.door.status(), self.car.status())
