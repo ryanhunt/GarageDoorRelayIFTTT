@@ -141,7 +141,7 @@ class App:
 							filename=self.log_file,
 							filemode='a')
 		
-		last = self.garage.door.status()
+		lastStatus = self.garage.door.status()
 		lastTime = datetime.datetime.now()
 		
 		if self.foreground:
@@ -156,23 +156,26 @@ class App:
 				#str = time.asctime(time.localtime(time.time()))
 
 				# this checks to see if there is a change in state, and if so - log it. 
-				if ( last != self.garage.door.status() ):
+				if ( lastStatus != self.garage.door.status() ):
 				
+					nowTime = datetime.datetime.now()
+					
 					if self.foreground:
 						#print ("Door status: ", self.door.status(), "Car status: " , self.car.status())
-						print ("{0} was for {1}".format(last, (datetime.datetime.now() - lastTime)))
-						print ("{0}".format(self.garage.door.status() ) )
+						
+						print ("{0}: {1} -> {2} ({3})".format(lastStatus, lastTime, nowTime, (nowTime - lastTime))
+						#print ("{0} -> {1} ({2})".format(lastStatus, self.garage.door.status(), (datetime.datetime.now() - lastTime)))
 					else:
 						#logging.info('DEBUG: Door status: %s Car status %d', self.door.status(), self.car.status())
 						#logging.info('DEBUG: %s', self.garage.door.status())
 						logging.info("DEBUG: {0} for {1}".format(last, datetime.datetime.now() - lastTime))
 					
-					lastTime = datetime.datetime.now()
+					lastTime = nowTime
 				
 				#else:
 					# this means that there is no change, so print/log nothing. We only want to capture changes.
 
-				last = self.garage.door.status()
+				lastStatus = self.garage.door.status()
 				time.sleep(0.5)
 			except:
 				logging.info(sys.exc_info())
