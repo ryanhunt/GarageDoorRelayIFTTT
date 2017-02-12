@@ -143,6 +143,7 @@ class App:
 		
 		lastStatus = self.garage.door.status()
 		lastTime = datetime.datetime.now()
+		numWarnings = 0
 		
 		if self.foreground:
 			print ("Daemon started at {0}".format( time.ctime() ) )
@@ -151,7 +152,7 @@ class App:
 			m, s = divmod(safeOpenTime, 60)
 			h, m = divmod(m, 60)
 			
-			print ("We'll warn you if door is open for more than {0} minutes, {1} seconds".format(m, s))
+			print ("We'll warn you if door is open for more than {0} minutes, {1} seconds".format(int(m), s))
 			print (self.garage.door.display())
 		else:
 			logging.info('DEBUG: %s', self.garage.door.status())
@@ -161,11 +162,10 @@ class App:
 			try:
 				#str = time.asctime(time.localtime(time.time()))
 
+				nowTime = datetime.datetime.now()
+				
 				# this checks to see if there is a change in state, and if so - log it. 
 				if ( lastStatus != self.garage.door.status() ):
-				
-					nowTime = datetime.datetime.now()
-					
 					if self.foreground:
 						#print ("Door status: ", self.door.status(), "Car status: " , self.car.status())
 						
@@ -181,7 +181,15 @@ class App:
 				#else:
 					# this means that there is no change, so print/log nothing. We only want to capture changes.
 
+				
+				# this part here then does warnings, but only once every 300 second (5 minutes) 
 				lastStatus = self.garage.door.status()
+				count = nowTime - ( 300.00 * numWarnings) - lastTime
+				
+				if (self.garage.door.isTimeToWorry(count) == True):
+					print ("It's time to worry now!")
+					numWarnings  = numWarnings + 1
+					
 				time.sleep(0.5)
 			except:
 				logging.info(sys.exc_info())

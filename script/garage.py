@@ -102,7 +102,7 @@ class GarageDoor(Garage):
 		self.defaultTimeToOpen = 15.59
 		self.defaultTimeToClose = 19.77
 		
-		# this is the default time before we should worry the door has been open too long, default is 5 minutes (300 seconds)
+		# this is the default time before we should worry the door has been open too long, default is 5 minutes (300 seconds) for wide open/operating and 30 minutes for ventilate mode.
 		self.setSafeOpenTime	()
 		
 	# Check door state
@@ -137,11 +137,23 @@ class GarageDoor(Garage):
 		duration = self.defaultTimeToOpen + self.defaultTimeToClose
 		return duration
 	
-	def setSafeOpenTime(self, duration=300.0):
-		self.SafeOpenTime = duration
+	def setSafeOpenTime(self, durationOpen=300.0, durationVentilate=1800.00):
+		self.SafeOpenTime = durationOpen
+		self.SafeVentilateTime = durationVentilate
 		
 	def getSafeOpenTime(self):
 		return self.SafeOpenTime
+		
+	def getSafeVentilateTime(self):
+		return self.SafeVentilateTime
+	
+	def isTimeToWorry(self, duration):
+		if ((duration >= self.SafeOpenTime) and (self.status() == "open" or self.status() == "operating")):
+			return True
+		elif: ((duration >= self.SafeVentilateTime) and (self.status() == "ventilate")):
+			return True
+		else:
+			return False
 	
 	def _trigger(self):
 		GPIO.output(self.GPIO_RELAY,GPIO.HIGH)
