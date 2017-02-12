@@ -186,8 +186,9 @@ class App:
 				lastStatus = self.garage.door.status()
 				#count = nowTime - ( 300.00 * numWarnings) - lastTime
 				count = nowTime - ( datetime.timedelta(seconds=(300 * numWarnings)) ) - lastTime
+				countFloat = float(count.total_seconds())
 				
-				if (self.garage.door.isTimeToWorry(count) == True):
+				if (self.garage.door.isTimeToWorry(countFloat) == True):
 					print ("It's time to worry now!")
 					numWarnings  = numWarnings + 1
 					
