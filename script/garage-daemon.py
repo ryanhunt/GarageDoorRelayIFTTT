@@ -155,6 +155,7 @@ class App:
 			print ("We'll warn you if door is open for more than {0} minutes, {1} seconds".format(int(m), s))
 			print (self.garage.door.display())
 		else:
+			logging.info("Daemon started at {0}".format( time.ctime() ) )
 			logging.info('DEBUG: %s', self.garage.door.status())
 		
 		while True:
@@ -189,7 +190,10 @@ class App:
 				countFloat = float(count.total_seconds())
 				
 				if (self.garage.door.isTimeToWorry(countFloat) == True):
-					print ("It's time to worry now!")
+					if self.foreground:
+						print ("It's time to worry now!")
+					else:
+						logging.info("DEBUG: It's time to worry now!")
 					numWarnings  = numWarnings + 1
 					
 				time.sleep(0.5)
