@@ -146,6 +146,12 @@ class App:
 		
 		if self.foreground:
 			print ("Daemon started at {0}".format( time.ctime() ) )
+			
+			safeOpenTime = self.garage.door.getSafeOpenTime()
+			m, s = divmod(safeOpenTime, 60)
+			h, m = divmod(m, 60)
+			
+			print ("We'll warn you if door is open for more than {0} minutes, {1} seconds".format(m, s))
 			print (self.garage.door.display())
 		else:
 			logging.info('DEBUG: %s', self.garage.door.status())
