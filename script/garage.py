@@ -137,7 +137,7 @@ class GarageDoor(Garage):
 		duration = self.defaultTimeToOpen + self.defaultTimeToClose
 		return duration
 	
-	def setSafeOpenTime(self, duration=300.0)
+	def setSafeOpenTime(self, duration=300.0):
 		self.SafeOpenTime = duration
 		
 	def getSafeOpenTime(self):
