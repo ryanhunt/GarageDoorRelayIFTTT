@@ -150,7 +150,7 @@ class GarageDoor(Garage):
 	def isTimeToWorry(self, duration):
 		if ((duration >= self.SafeOpenTime) and (self.status() == "open" or self.status() == "operating")):
 			return True
-		elif: ((duration >= self.SafeVentilateTime) and (self.status() == "ventilate")):
+		elif ((duration >= self.SafeVentilateTime) and (self.status() == "ventilate")):
 			return True
 		else:
 			return False
