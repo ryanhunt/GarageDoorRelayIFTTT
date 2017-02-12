@@ -174,7 +174,7 @@ class App:
 					else:
 						#logging.info('DEBUG: Door status: %s Car status %d', self.door.status(), self.car.status())
 						#logging.info('DEBUG: %s', self.garage.door.status())
-						logging.info("DEBUG: {0} for {1}".format(last, datetime.datetime.now() - lastTime))
+						logging.info("DEBUG: {0}: {1} -> {2} ({3})".format(lastStatus, lastTime, nowTime, (nowTime - lastTime)))
 					
 					lastTime = nowTime
 				
