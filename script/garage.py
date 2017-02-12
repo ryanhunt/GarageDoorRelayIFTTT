@@ -96,6 +96,15 @@ class GarageDoor(Garage):
 		self.TEMPFILE = Path("/tmp/GarageDoor.air")
 		self.VENTILATIONPERC = 10
 		
+		# Time to open fully (from closed) = 15.59 seconds
+		# time to close fully (from open) = 19.77 seconds
+		
+		self.defaultTimeToOpen = 15.59
+		self.defaultTimeToClose = 19.77
+		
+		# this is the default time before we should worry the door has been open too long, default is 5 minutes (300 seconds)
+		self.setSafeOpenTime	()
+		
 	# Check door state
 	def status(self):
 	
@@ -122,6 +131,18 @@ class GarageDoor(Garage):
 		str = "Door is {0}".format(self.status())
 		return str
 		
+	def getSafeOperatingTime(self):
+		# this returns a time in which we should start worrying that's it been in an 'operating' state for too long. 
+		# as a rule of thumb, I've set the time to time to open + time to close to give it a buffer. 
+		duration = self.defaultTimeToOpen + self.defaultTimeToClose
+		return duration
+	
+	def setSafeOpenTime(self, duration="300.0")
+		self.SafeOpenTime = duration
+		
+	def getSafeOpenTime(self):
+		return self.SafeOpenTime
+	
 	def _trigger(self):
 		GPIO.output(self.GPIO_RELAY,GPIO.HIGH)
 		# Allow wires to short for long enough.
