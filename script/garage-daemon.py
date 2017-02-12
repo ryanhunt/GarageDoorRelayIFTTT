@@ -185,7 +185,7 @@ class App:
 				# this part here then does warnings, but only once every 300 second (5 minutes) 
 				lastStatus = self.garage.door.status()
 				#count = nowTime - ( 300.00 * numWarnings) - lastTime
-				count = nowTime - ( datetime.timedelta(seconds=(300 * numWarnings)).time() ) - lastTime
+				count = nowTime - ( datetime.timedelta(seconds=(300 * numWarnings)) ) - lastTime
 				
 				if (self.garage.door.isTimeToWorry(count) == True):
 					print ("It's time to worry now!")
