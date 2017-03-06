@@ -24,6 +24,8 @@ import json
 import time
 import datetime
 import argparse
+import pyrebase
+import secret
 import sys
 import os
 import logging
@@ -120,7 +122,8 @@ class App:
 		self.log_file = '/tmp/garage.log'
 		self.foreground = False
 		
-		self.garage = Garage()
+		# creates a new Garage instance, with a  warning alert interval of 30 seconds (default is 300 secs/5 mins)
+		self.garage = Garage(30)
 
 	def open(self):
 		logging.basicConfig(level=logging.DEBUG,
@@ -185,8 +188,8 @@ class App:
 				
 				# this part here then does warnings, but only once every 300 second (5 minutes) 
 				lastStatus = self.garage.door.status()
-				#count = nowTime - ( 300.00 * numWarnings) - lastTime
-				count = nowTime - ( datetime.timedelta(seconds=(30 * numWarnings)) ) - lastTime
+				#count = nowTime - ( self.garage.warningTime * numWarnings) - lastTime
+				count = nowTime - ( datetime.timedelta(seconds=(self.garage.warningTime * numWarnings)) ) - lastTime
 				countFloat = float(count.total_seconds())
 				
 				if (self.garage.door.isTimeToWorry(countFloat) == True):

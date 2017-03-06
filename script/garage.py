@@ -52,7 +52,9 @@ __copyright__ = "Copyright (c) 2016-2017 Ryan Hunt"
 
 
 class Garage():
-	def __init__(self):
+	def __init__(self, warningTime=300):
+		
+		# warningTime defines the amount of time we should wait before alerting users that the door is in an warning state (i.e. left open for a period of time - then SMS someone after 300 seconds (5 minutes))
 		
 		# Use BCM GPIO references
 		# instead of physical pin numbers
@@ -60,9 +62,15 @@ class Garage():
 		# this is so I can retain the settings between run, and avoid errors
 		GPIO.setwarnings(False) 
 		
+		
+		
 		self.car = Car()
 		self.door = GarageDoor()
 		self.weather = GarageWeather()
+		
+		# see above
+		self.warningTime = warningTime
+	
 		
 	def status(self):
 	    
